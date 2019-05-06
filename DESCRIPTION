@@ -1,11 +1,13 @@
 Package: intervalTraining
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Learn about confidence intervals and prediction intervals
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
+Authors@R: person("David", "Stanley", , "dstanley@uoguelph.ca", role = c("aut", "cre"))
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+URL: https://github.com/dstanley4/intervalTraining
+License: MIT License + file LICENSE
 Encoding: UTF-8
 LazyData: true
+Depends:
+    R (>= 3.1.2)
