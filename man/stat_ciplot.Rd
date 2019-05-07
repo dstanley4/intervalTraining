@@ -2,37 +2,35 @@
 % Please edit documentation in R/stat-ciplot.R
 \name{stat_ciplot}
 \alias{stat_ciplot}
-\title{This is the documentation for stat_catseye}
+\title{This is the documentation for stat_ciplot (confidence interval plot)}
 \usage{
-stat_ciplot(mapping = NULL, data = NULL, geom = "path",
-  position = "identity", na.rm = FALSE, show.legend = NA,
-  inherit.aes = TRUE, pop.r, n, ci.LL, ci.UL, ...)
+stat_ciplot(mapping = NULL, data = NULL, position = "identity",
+  na.rm = FALSE, show.legend = NA, inherit.aes = TRUE, pop.r, n,
+  ci.LL, ci.UL, ...)
 }
 \arguments{
-\item{mapping}{asdfasd}
+\item{mapping}{Set of aesthetic mappings created by aes() or aes_(). If specified and inherit.aes = TRUE (the default), it is combined with the default mapping at the top level of the plot. You must supply mapping if there is no plot mapping}
 
-\item{data}{adfasd}
+\item{data}{The data to be displayed in this layer}
 
-\item{geom}{asdfasd}
+\item{position}{Position adjustment, either as a string, or the result of a call to a position adjustment function.}
 
-\item{position}{asdfasd}
+\item{na.rm}{If FALSE, the default, missing values are removed with a warning. If TRUE, missing values are silently removed}
 
-\item{na.rm}{adsfasdf}
+\item{show.legend}{logical. Should this layer be included in the legends? NA, the default, includes if any aesthetics are mapped. FALSE never includes, and TRUE always includes. It can also be a named logical vector to finely select the aesthetics to display}
 
-\item{show.legend}{asdfads}
+\item{inherit.aes}{If FALSE, overrides the default aesthetics, rather than combining with them. This is most useful for helper functions that define both data and aesthetics and shouldn't inherit behaviour from the default plot specification, e.g. borders().}
 
-\item{inherit.aes}{adfasd}
+\item{pop.r}{Population correlation}
 
-\item{pop.r}{asdf}
+\item{n}{Sample size}
 
-\item{n}{asdf}
+\item{ci.LL}{Confidence interval lower limit}
 
-\item{ci.LL}{asdf}
+\item{ci.UL}{Confidence interval upper limit}
 
-\item{ci.UL}{asdf}
-
-\item{...}{adfasdf}
+\item{...}{Other arguments}
 }
 \description{
-This is the documentation for stat_catseye
+This is the documentation for stat_ciplot (confidence interval plot)
 }
