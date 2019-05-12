@@ -1,60 +1,60 @@
-
 #' Calculate a number of sample correlations based on a specified population correlation
-#' @param pop.r Population correlation. Do not use pop.data is you provide this value.
+#' @param pop_r Population correlation. Do not use pop.data is you provide this value.
 #' @param n Sample size for all samples If you use n, do not use n.min or n.max.
-#' @param number.of.samples Number of samples to obtain
-#' @param number.of.decimals Number of decimals to report in returned data frame
+#' @param number_samples Number of samples to obtain
+#' @param number_decimals Number of decimals to report in returned data frame
 #' @return Data frame with sample correlations
 #' @examples
-#' get_r_samples(pop.r = .35,n=100)
+#' get_r_samples(pop_r = .35, n = 100)
 #' @export
-get_r_samples <- function(pop.r = NA, n, number.of.samples = 10, number.of.decimals = 3) {
+get_r_samples <- function(pop_r = NA, n, number_samples = 10, number_decimals = 2) {
 
      Sigma <- diag(2)
-     Sigma[1,2] <- pop.r
-     Sigma[2,1] <- pop.r
+     Sigma[1,2] <- pop_r
+     Sigma[2,1] <- pop_r
      mu <- c(0,0)
-     K <- number.of.samples
+     K <- number_samples
      data_samples <- get_true_scores_with_sampling_error_cov(Sigma, mu, n, K)
 
-     rs <- rep(NA,number.of.samples)
-     dfs <- rep(NA,number.of.samples)
-     ts <- rep(NA,number.of.samples)
-     in_interval <- rep(NA, number.of.samples)
-     ps <- rep(NA,number.of.samples)
-     LLs <- rep(NA,number.of.samples)
-     ULs <- rep(NA,number.of.samples)
-     pi_LLs <- rep(NA,number.of.samples)
-     pi_ULs <- rep(NA,number.of.samples)
-     pi_in_interval <- rep(NA, number.of.samples)
-     ci_as_pi_in_interval <- rep(NA, number.of.samples)
-     for (i in 1:number.of.samples) {
+     rs <- rep(NA,number_samples)
+     dfs <- rep(NA,number_samples)
+     ts <- rep(NA,number_samples)
+     in_interval <- rep(NA, number_samples)
+     ps <- rep(NA,number_samples)
+     LLs <- rep(NA,number_samples)
+     ULs <- rep(NA,number_samples)
+     pi_LLs <- rep(NA,number_samples)
+     pi_ULs <- rep(NA,number_samples)
+     pi_in_interval <- rep(NA, number_samples)
+     ci_as_pi_in_interval <- rep(NA, number_samples)
+     for (i in 1:number_samples) {
           x <- data_samples$x_true[,i]
           y <- data_samples$y_true[,i]
           r_info <- stats::cor.test(x,y)
-          rs[i] <- round(r_info$estimate,number.of.decimals)
-          LLs[i] <- round(r_info$conf.int[1],number.of.decimals)
-          ULs[i] <- round(r_info$conf.int[2],number.of.decimals)
-          in_interval[i] <- is_value_in_interval(pop.r, c(r_info$conf.int[1], r_info$conf.int[2]))
-          ts[i] <- round(r_info$statistic,number.of.decimals)
-          dfs[i] <- round(r_info$parameter,number.of.decimals)
+          rs[i] <- round(r_info$estimate,number_decimals+1)
+          LLs[i] <- round(r_info$conf.int[1],number_decimals)
+          ULs[i] <- round(r_info$conf.int[2],number_decimals)
+          in_interval[i] <- is_value_in_interval(pop_r, c(r_info$conf.int[1], r_info$conf.int[2]))
+          ts[i] <- round(r_info$statistic,number_decimals)
+          dfs[i] <- round(r_info$parameter,number_decimals)
           ps[i] <- round(r_info$p.value,5)
           pi_info <- predictionInterval::pi.r(r = rs[i], n = n, rep.n = n)
-          pi_LLs[i] <- round(pi_info$lower_prediction_interval, number.of.decimals)
-          pi_ULs[i] <- round(pi_info$upper_prediction_interval, number.of.decimals)
+          pi_LLs[i] <- round(pi_info$lower_prediction_interval, number_decimals)
+          pi_ULs[i] <- round(pi_info$upper_prediction_interval, number_decimals)
           if (i > 1) {
                pi_in_interval[i-1] <- is_value_in_interval(rs[i], c(pi_LLs[i-1], pi_ULs[i-1]))
                ci_as_pi_in_interval[i-1]  <- is_value_in_interval(rs[i], c(LLs[i-1], ULs[i-1]))
           }
      }
-     xx<-1:number.of.samples
-     sample.number <- xx
-     data.out <- data.frame(sample.number, pop.r = pop.r, n = n, r =  rs, ci.LL = LLs, ci.UL = ULs, ci.captures.pop.r = in_interval, pi.LL = pi_LLs, pi.UL = pi_ULs, pi.captures.next.r = pi_in_interval, ci.captures.next.r = ci_as_pi_in_interval, p = ps)
+     xx<-1:number_samples
+     sample_number <- xx
+     data.out <- data.frame(sample_number, pop_r = pop_r, n = n, r =  rs, ci_LL = LLs, ci_UL = ULs, pi_LL = pi_LLs, pi_UL = pi_ULs, ci_captures_pop_r = in_interval, ci_captures_next_r = ci_as_pi_in_interval, pi_captures_next_r = pi_in_interval, p = ps)
      rownames(data.out) <- NULL
 
 
-     pi_in_interval[i] <- is_value_in_interval(pop.r, c(r_info$conf.int[1], r_info$conf.int[2]))
+     pi_in_interval[i] <- is_value_in_interval(pop_r, c(r_info$conf.int[1], r_info$conf.int[2]))
 
+     data.out <- tibble::as_tibble(data.out)
 
 
      return(data.out)
@@ -111,5 +111,6 @@ percent_true <- function(x) {
      sum_length <- sum(!is.na(x))
      return(sum_TRUE/sum_length*100)
 }
+
 
 
