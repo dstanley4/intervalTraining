@@ -4,7 +4,7 @@
 #' @param level Confidence level (0 to 1), default .95
 #' @param show_message Show console message describing CI
 #' @export
-ci_r <- function(r, n, level = .95, show_message = TRUE) {
+ci.r <- function(r, n, level = .95, show_message = TRUE) {
   alpha_level_half = (1 - level)/2
   LLz <- r_to_z(r) - qnorm(1 -alpha_level_half) * r_to_z_se(n)
   ULz <- r_to_z(r) + qnorm(1 -alpha_level_half) * r_to_z_se(n)

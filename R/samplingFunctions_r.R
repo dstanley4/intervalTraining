@@ -7,7 +7,7 @@
 #' @examples
 #' get_r_samples(pop_r = .35, n = 100)
 #' @export
-get_r_samples <- function(pop_r = NA, n, number_samples = 10, number_decimals = 2) {
+get.r.samples <- function(pop_r = NA, n, number_samples = 10, number_decimals = 2) {
 
      Sigma <- diag(2)
      Sigma[1,2] <- pop_r
@@ -106,7 +106,7 @@ is_value_in_interval <- function(value, interval) {
 #' @param x the column to be examined
 #' @return The percent equal to TRUE
 #' @export
-percent_true <- function(x) {
+percent.true <- function(x) {
      sum_TRUE <- sum(x, na.rm = TRUE)
      sum_length <- sum(!is.na(x))
      return(sum_TRUE/sum_length*100)
