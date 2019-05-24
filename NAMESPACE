@@ -3,7 +3,7 @@
 export(bounds.r)
 export(ci.r)
 export(get.r.samples)
-export(percent.true)
+export(percent_true)
 export(pop_r_sampling_bounds)
 export(stat_ciplot)
 export(stat_histotext)

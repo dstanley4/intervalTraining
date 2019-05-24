@@ -1,19 +1,54 @@
-#' This is the documentation for stat_piplot (prediction interval plot)
-#' @param mapping Set of aesthetic mappings created by aes() or aes_(). If specified and inherit.aes = TRUE (the default), it is combined with the default mapping at the top level of the plot. You must supply mapping if there is no plot mapping
-#' @param data The data to be displayed in this layer
-#' @param position Position adjustment, either as a string, or the result of a call to a position adjustment function.
-#' @param na.rm If FALSE, the default, missing values are removed with a warning. If TRUE, missing values are silently removed
-#' @param show.legend logical. Should this layer be included in the legends? NA, the default, includes if any aesthetics are mapped. FALSE never includes, and TRUE always includes. It can also be a named logical vector to finely select the aesthetics to display
-#' @param inherit.aes If FALSE, overrides the default aesthetics, rather than combining with them. This is most useful for helper functions that define both data and aesthetics and shouldn't inherit behaviour from the default plot specification, e.g. borders().
-#' @param pop.r Population correlation
-#' @param n Sample size
-#' @param pi.LL Prediction interval lower limit
-#' @param pi.UL Prediction interval upper limit
-#' @param ... Other arguments
+#remember to account for missing data
+
+StatSamplingDistributionOutline <- ggplot2::ggproto("StatSamplingDistributionOutline", ggplot2::Stat,
+                                                    required_aes = c("x", "y"),
+                                                    compute_group = function(data, scales, level, fill, pop.r, n, pi.LL, pi.UL) {
+                                                      calc_distribution_path_data(data,scales)
+                                                    }
+)
+
+StatSamplingDistributionCapture <- ggplot2::ggproto("StatSamplingDistributionCapture", ggplot2::Stat,
+                                                    required_aes = c("x", "y"),
+
+                                                    compute_group = function(data, scales, level, fill, pop.r, n, pi.LL, pi.UL) {
+                                                      calc_distribution_polygon_data(data, scales)
+                                                    }
+
+)
+
+
+StatIntervalPI <- ggplot2::ggproto("StatSamplingDistributionCapture", ggplot2::Stat,
+                                   required_aes = c("x", "y"),
+                                   compute_group = function(data, scales, level, fill, pop.r, n, pi.LL, pi.UL, height = .15, size = .8) {
+                                     calc_pi_interval_data(data, scales)
+                                   }
+
+)
+
+StatIntervalCenter<- ggplot2::ggproto("StatSamplingDistributionCapture", ggplot2::Stat,
+                                      required_aes = c("x", "y"),
+                                      compute_group = function(data, scales, level, fill) {
+                                        return(data)
+                                      }
+
+)
+
+#remove fill and colour from above functions?
+
+
+#' This is the documentation for stat_catseye
+#' @param mapping asdfasd
+#' @param data adfasd
+#' @param geom asdfasd
+#' @param position asdfasd
+#' @param na.rm adsfasdf
+#' @param show.legend asdfads
+#' @param inherit.aes adfasd
+#' @param ... adfasdf
 #' @export
-stat_piplot <- function(mapping = NULL, data = NULL,
-                        position = "identity", na.rm = FALSE, show.legend = NA,
-                        inherit.aes = TRUE, pop.r, n, pi.LL, pi.UL, ...) {
+stat_piplot <- function(mapping = NULL, data = NULL, geom = "polygon",
+                           position = "identity", na.rm = FALSE, show.legend = NA,
+                           inherit.aes = TRUE, pop.r, n, pi.LL, pi.UL, ...) {
 
   list(
     ggplot2::layer(
@@ -22,7 +57,7 @@ stat_piplot <- function(mapping = NULL, data = NULL,
       params = list(na.rm = na.rm, ...)
     ),
     ggplot2::layer(
-      stat = StatSamplingDistributionCapture, data = data, mapping = mapping, geom = "polygon",
+      stat = StatSamplingDistributionCapture, data = data, mapping = mapping, geom = geom,
       position = position, show.legend = show.legend, inherit.aes = inherit.aes,
       params = list(na.rm = na.rm, ...)
     ),
@@ -38,43 +73,6 @@ stat_piplot <- function(mapping = NULL, data = NULL,
     )
   )
 }
-
-
-
-StatSamplingDistributionOutline <- ggplot2::ggproto("StatSamplingDistributionOutline", ggplot2::Stat,
-                              required_aes = c("x", "y"),
-                              compute_group = function(data, scales, level, fill, pop.r, n, pi.LL, pi.UL) {
-                                calc_distribution_path_data(data,scales)
-                              }
-)
-
-StatSamplingDistributionCapture <- ggplot2::ggproto("StatSamplingDistributionCapture", ggplot2::Stat,
-                             required_aes = c("x", "y"),
-
-                             compute_group = function(data, scales, level, fill, pop.r, n, pi.LL, pi.UL) {
-                               calc_distribution_polygon_data(data, scales)
-                             }
-
-)
-
-
-StatIntervalPI <- ggplot2::ggproto("StatSamplingDistributionCapture", ggplot2::Stat,
-                                   required_aes = c("x", "y"),
-                                   compute_group = function(data, scales, level, fill, pop.r, n, pi.LL, pi.UL, height = .15, size = .8) {
-                                     calc_pi_interval_data(data, scales)
-                                   }
-
-)
-
-StatIntervalCenter<- ggplot2::ggproto("StatSamplingDistributionCapture", ggplot2::Stat,
-                                   required_aes = c("x", "y"),
-                                   compute_group = function(data, scales, level, fill) {
-                                     return(data)
-                                   }
-
-)
-
-
 
 
 r_to_z <- function(r) {
@@ -115,7 +113,10 @@ path_density_points <-function(pop.r, n, number.points  = 100) {
   last_row <- density_values_out[n_rows,]
   first_row[1,2] <- 0
   last_row[1,2] <- 0
-  density_values_out <- rbind(first_row, density_values_out, last_row, first_row)
+  density_values_out <- rbind(first_row,
+                              density_values_out,
+                              last_row,
+                              first_row)
 
 
   return(density_values_out)
@@ -142,15 +143,35 @@ polygon_density_points <- function(pop.r, n, LL, UL) {
   return(pdf_out)
 }
 
-path_polygon_data <- function(pop.r, n, LL, UL, y, scalefactor = .60) {
-  path_df <- path_density_points(pop.r = pop.r, n = n)
+path_polygon_data <- function(pop.r, n, LL, UL, y, other_pdf_max = 0, scale_to_other = TRUE, scalefactor = .50) {
+  path_df    <- path_density_points(pop.r = pop.r, n = n)
   polygon_df <- polygon_density_points(pop.r = pop.r, n = n, LL = LL, UL = UL)
   path_y_max <- max(path_df$pdf)
-  path_df$pdf <- path_df$pdf / path_y_max * scalefactor
-  polygon_df$pdf <- polygon_df$pdf / path_y_max * scalefactor
 
-  path_df$pdf <- path_df$pdf + y + .15
-  polygon_df$pdf <- polygon_df$pdf + y + .15
+  # problem scales curves independents of other curves
+  # needs to be in another function
+  # works for pi but not ci when it is here
+  # send in an argument..
+
+  area_path <- DescTools::AUC(x = path_df$r, y = path_df$pdf)
+  path_df$pdf <- path_df$pdf / area_path
+  polygon_df$pdf <- polygon_df$pdf / area_path
+
+
+
+  if (scale_to_other == TRUE) {
+    current_pdf_max <- max(path_df$pdf)
+    path_max_both <- max(other_pdf_max, current_pdf_max)
+    print(sprintf("other: %1.2f, current:%1.2f, max: %1.2f",other_pdf_max, current_pdf_max,path_max_both))
+    path_df$pdf <- path_df$pdf / path_max_both
+    polygon_df$pdf <- polygon_df$pdf / path_max_both
+    print("************************")
+    path_df$pdf <- path_df$pdf *scalefactor
+    polygon_df$pdf <- polygon_df$pdf *scalefactor
+
+    path_df$pdf <- path_df$pdf + y + .15
+    polygon_df$pdf <- polygon_df$pdf + y + .15
+  }
 
   output <- list()
   output$path <- path_df
@@ -167,10 +188,19 @@ calc_distribution_path_data <- function(data, scales) {
   group <- data$group[1]
   PANEL <- data$PANEL[1]
 
-  path_data = path_polygon_data(pop.r = data$pop.r[1], n = data$n[1], LL = data$pi.LL[1], UL = data$pi.UL[1], y = y)$path
+  path_data = path_polygon_data(pop.r = data$pop.r[1],
+                                n = data$n[1],
+                                LL = data$pi.LL[1],
+                                UL = data$pi.UL[1],
+                                y = y)$path
 
-  df_out <- data.frame(x = path_data$r, y = path_data$pdf, PANEL = PANEL, group = group)
+  df_out <- data.frame(x = path_data$r,
+                       y = path_data$pdf,
+                       PANEL = PANEL,
+                       group = group)
 
+  #print("df out path")
+  #print(df_out)
   return(df_out)
 }
 
@@ -180,20 +210,33 @@ calc_distribution_polygon_data <- function(data, scales) {
   group <- data$group[1]
   PANEL <- data$PANEL[1]
 
-  polygon_data = path_polygon_data(pop.r = data$pop.r[1], n = data$n[1], LL = data$pi.LL[1], UL = data$pi.UL[1], y = y)$polygon
+  polygon_data = path_polygon_data(pop.r = data$pop.r[1],
+                                   n = data$n[1],
+                                   LL = data$pi.LL[1],
+                                   UL = data$pi.UL[1],
+                                   y = y)$polygon
 
-  df_out <- data.frame(x = polygon_data$r, y = polygon_data$pdf, PANEL = PANEL, group = group)
+  df_out <- data.frame(x = polygon_data$r,
+                       y = polygon_data$pdf,
+                       PANEL = PANEL,
+                       group = group)
 
   print("df out polygon")
   print(df_out)
   return(df_out)
 }
 
-
 calc_pi_interval_data <- function(data, scales) {
   print("pi whisker data")
   print(data)
-  df_out <- data.frame(x = data$x[1], y = data$y[1], xmin = data$pi.LL, xmax = data$pi.UL, height = .15, size = .5, PANEL = data$PANEL[1], group = data$group[1])
+  df_out <- data.frame(x = data$x[1],
+                       y = data$y[1],
+                       xmin = data$pi.LL,
+                       xmax = data$pi.UL,
+                       height = .15,
+                       size = .5,
+                       PANEL = data$PANEL[1],
+                       group = data$group[1])
   print("pi out")
   print(df_out)
   return(df_out)

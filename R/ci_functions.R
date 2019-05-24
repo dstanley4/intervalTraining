@@ -57,10 +57,10 @@ bounds.r <- function(samples, level = .95) {
 
   K <- length(r)
   n <- samples$n[1]
-  pop_r <- samples$pop_r[1]
+  pop.r <- samples$pop.r[1]
 
 
-  cat(sprintf("Population correlation: %1.2f\nn = %1.0f\nnumber of samples = %1.0f\n", pop_r, n, K))
+  cat(sprintf("Population correlation: %1.2f\nN = %1.0f\nNumber of samples = %1.0f\n", pop.r, n, K))
   cat(sprintf("Range sample r: %1.2f to %1.2f\n", range(r)[1], range(r)[2]))
   cat(sprintf("95%% sample r: %1.2f to %1.2f\n", sampling_lower_bound, sampling_upper_bound))
   cat(sprintf("95%% width sample r: %1.2f\n", abs(sampling_upper_bound - sampling_lower_bound)))
