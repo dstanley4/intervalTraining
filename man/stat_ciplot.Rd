@@ -6,7 +6,7 @@
 \usage{
 stat_ciplot(mapping = NULL, data = NULL, geom = "path",
   position = "identity", na.rm = FALSE, show.legend = NA,
-  inherit.aes = TRUE, pop.r, n, ci.LL, ci.UL, ...)
+  inherit.aes = TRUE, ...)
 }
 \arguments{
 \item{mapping}{asdfasd}

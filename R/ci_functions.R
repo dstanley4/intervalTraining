@@ -20,24 +20,6 @@ ci.r <- function(r, n, level = .95, show_message = TRUE) {
   return(c(LL, UL))
 }
 
-#' Obtain the range of sample correlations for a given population correlation and sample size
-#' @param pop_r Population correlation
-#' @param n Sample size
-#' @param level Confidence level (0 to 1), default .95
-#' @export
-pop_r_sampling_bounds <- function(pop_r, n, level = .95) {
-  r_values <- ci_r(r= pop_r, n = n, level = level, show_message = FALSE)
-
-  alpha_half_percent <- ((1 - level)/2)*100
-
-  message(sprintf("Population correlation: %1.2f", pop_r))
-  message(sprintf("Range: 95%% sample correlations between %1.2f and %1.2f", r_values[1], r_values[2]))
-  message(sprintf("%1.1f%% of sample correlations greater than %1.2f", alpha_half_percent, r_values[2]))
-  message(sprintf("%1.1f%% of sample correlations less than %1.2f", alpha_half_percent, r_values[1]))
-
-  return(r_values)
-}
-
 
 #' Obtain the range of sample correlations for a given population correlation and sample size
 #' @param pop_r Population correlation
@@ -71,5 +53,16 @@ bounds.r <- function(samples, level = .95) {
 }
 
 
+pi.dist.capture <- function(pop.r, n, pi.LL, pi.UL) {
+  z.pi.LL <- r_to_z(pi.LL)
+  z.pi.UL <- r_to_z(pi.UL)
+  z.pop.r <- r_to_z(pop.r)
+  z.se <- r_to_z_se(n)
 
+  upper.percent <- pnorm(q = z.pi.UL, mean = z.pop.r, sd = z.se)
+  lower.percent <- pnorm(q = z.pi.LL, mean = z.pop.r, sd = z.se)
 
+  prop.capture <- upper.percent - lower.percent
+
+  return(prop.capture*100)
+}

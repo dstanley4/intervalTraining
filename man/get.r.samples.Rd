@@ -4,8 +4,7 @@
 \alias{get.r.samples}
 \title{Calculate a number of sample correlations based on a specified population correlation}
 \usage{
-get.r.samples(pop.r = NA, n, number.of.samples = 10,
-  number.of.decimals = 3)
+get.r.samples(pop.r = NA, n, number.of.samples = 10)
 }
 \arguments{
 \item{pop.r}{Population correlation. Do not use pop.data is you provide this value.}
@@ -13,8 +12,6 @@ get.r.samples(pop.r = NA, n, number.of.samples = 10,
 \item{n}{Sample size for all samples If you use n, do not use n.min or n.max.}
 
 \item{number.of.samples}{Number of samples to obtain}
-
-\item{number.of.decimals}{Number of decimals to report in returned data frame}
 }
 \value{
 Data frame with sample correlations
@@ -23,5 +20,5 @@ Data frame with sample correlations
 Calculate a number of sample correlations based on a specified population correlation
 }
 \examples{
-get_r_samples(pop.r = .35,n=100)
+get.r.samples(pop.r = .35,n=100)
 }

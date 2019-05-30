@@ -162,10 +162,10 @@ path_polygon_data <- function(pop.r, n, LL, UL, y, other_pdf_max = 0, scale_to_o
   if (scale_to_other == TRUE) {
     current_pdf_max <- max(path_df$pdf)
     path_max_both <- max(other_pdf_max, current_pdf_max)
-    print(sprintf("other: %1.2f, current:%1.2f, max: %1.2f",other_pdf_max, current_pdf_max,path_max_both))
+    # print(sprintf("other: %1.2f, current:%1.2f, max: %1.2f",other_pdf_max, current_pdf_max,path_max_both))
     path_df$pdf <- path_df$pdf / path_max_both
     polygon_df$pdf <- polygon_df$pdf / path_max_both
-    print("************************")
+    # print("************************")
     path_df$pdf <- path_df$pdf *scalefactor
     polygon_df$pdf <- polygon_df$pdf *scalefactor
 

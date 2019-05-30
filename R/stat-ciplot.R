@@ -1,23 +1,23 @@
 #remember to account for missing data
 
 StatSamplingDistributionLL <- ggplot2::ggproto("StatSamplingDistributionOutline", ggplot2::Stat,
-                                               required_aes = c("x", "y"),
-                                               compute_group = function(data, scales, level, fill, pop.r, n, ci.LL, ci.UL) {
+                                               required_aes = c("x", "y", "pop.r", "n", "ci.LL", "ci.UL"),
+                                               compute_group = function(data, scales, level, fill, pop.r = 0, n = 0, ci.LL = 0, ci.UL = 0) {
                                                  calc_distribution_ciLL(data, scales)
                                                }
 )
 
 StatSamplingDistributionUL <- ggplot2::ggproto("StatSamplingDistributionOutline", ggplot2::Stat,
-                                               required_aes = c("x", "y"),
-                                               compute_group = function(data, scales, level, fill, pop.r, n, ci.LL, ci.UL) {
+                                               required_aes = c("x", "y", "pop.r", "n", "ci.LL", "ci.UL"),
+                                               compute_group = function(data, scales, level, fill, pop.r = 0, n = 0, ci.LL = 0, ci.UL = 0) {
                                                  calc_distribution_ciUL(data,scales)
                                                }
 )
 
 
 StatIntervalCI <- ggplot2::ggproto("StatSamplingDistributionCapture", ggplot2::Stat,
-                                   required_aes = c("x", "y"),
-                                   compute_group = function(data, scales, level, fill, pop.r, n, ci.LL, ci.UL, height = .15, size = 1) {
+                                   required_aes = c("x", "y", "pop.r", "n", "ci.LL", "ci.UL"),
+                                   compute_group = function(data, scales, level, fill, height = .15, size = 1, pop.r = 0, n = 0, ci.LL = 0, ci.UL = 0) {
                                      calc_ci_interval_data(data, scales, height, size)
                                    }
 
@@ -25,8 +25,8 @@ StatIntervalCI <- ggplot2::ggproto("StatSamplingDistributionCapture", ggplot2::S
 
 
 StatDistCenterUL<- ggplot2::ggproto("StatDistCenterUL", ggplot2::Stat,
-                                    required_aes = c("x", "y"),
-                                    compute_group = function(data, scales, level, fill, pop.r, n, ci.LL, ci.UL, height = .15, size = .8) {
+                                    required_aes = c("x", "y", "pop.r", "n", "ci.LL", "ci.UL"),
+                                    compute_group = function(data, scales, level, fill, height = .15, size = .8, pop.r = 0, n = 0, ci.LL = 0, ci.UL = 0) {
                                       calc_distribution_centerUL(data, scales)
                                     }
 
@@ -34,8 +34,8 @@ StatDistCenterUL<- ggplot2::ggproto("StatDistCenterUL", ggplot2::Stat,
 
 
 StatDistCenterLL<- ggplot2::ggproto("StatDistCenterLL", ggplot2::Stat,
-                                    required_aes = c("x", "y"),
-                                    compute_group = function(data, scales, level, fill, pop.r, n, ci.LL, ci.UL, height = .15, size = .8) {
+                                    required_aes = c("x", "y", "pop.r", "n", "ci.LL", "ci.UL"),
+                                    compute_group = function(data, scales, level, fill, height = .15, size = .8, pop.r = 0, n = 0, ci.LL = 0, ci.UL = 0) {
                                       calc_distribution_centerLL(data, scales)
                                     }
 
@@ -56,7 +56,7 @@ StatDistCenterLL<- ggplot2::ggproto("StatDistCenterLL", ggplot2::Stat,
 #' @export
 stat_ciplot <- function(mapping = NULL, data = NULL, geom = "path",
                         position = "identity", na.rm = FALSE, show.legend = NA,
-                        inherit.aes = TRUE, pop.r, n, ci.LL, ci.UL, ...) {
+                        inherit.aes = TRUE, ...) {
 
   list(
     ggplot2::layer(
@@ -109,8 +109,8 @@ calc_distribution_ciLL <- function(data, scales) {
                                 scale_to_other = FALSE)$path
 
   other_pdf_max <- max(path_other$pdf)
-  print("LL other_pdf_max")
-  print(other_pdf_max)
+  # print("LL other_pdf_max")
+  # print(other_pdf_max)
 
 
   path_data <- path_polygon_data(pop.r = data$ci.LL[1],
@@ -144,8 +144,8 @@ calc_distribution_ciUL <- function(data, scales) {
                                   scale_to_other = FALSE)$path
 
   other_pdf_max <- max(path_other$pdf)
-  print("UL other_pdf_max")
-  print(other_pdf_max)
+  # print("UL other_pdf_max")
+  # print(other_pdf_max)
 
   path_data = path_polygon_data(pop.r = data$ci.UL[1],
                                 n = data$n[1],
