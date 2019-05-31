@@ -28,7 +28,7 @@ get.r.samples <- function(pop.r = NA, n, number.of.samples = 10) {
   pi_ULs <- rep(NA,number.of.samples)
   pi_in_interval <- rep(NA, number.of.samples)
   ci_as_pi_in_interval <- rep(NA, number.of.samples)
-  pi_capture_dist_percent <- rep(NA, number.of.samples)
+  #pi_capture_dist_percent <- rep(NA, number.of.samples)
 
   for (i in 1:number.of.samples) {
     x <- data_samples$x_true[,i]
@@ -49,22 +49,21 @@ get.r.samples <- function(pop.r = NA, n, number.of.samples = 10) {
       ci_as_pi_in_interval[i-1]  <- is_value_in_interval(rs[i], c(LLs[i-1], ULs[i-1]))
     }
 
-    pi_capture_dist_percent[i] <- pi.dist.capture(pop.r = pop.r, n = n, pi.LL = pi_LLs[i] , pi.UL = pi_ULs[i])
+  #  pi_capture_dist_percent[i] <- pi.dist.capture(pop.r = pop.r, n = n, pi.LL = pi_LLs[i] , pi.UL = pi_ULs[i])
   }
   xx<-1:number.of.samples
   sample.number <- xx
-  data.out <- data.frame(sample.number, pop.r = pop.r, n = n, r =  rs, ci.LL = LLs, ci.UL = ULs, ci.captures.pop.r = in_interval, pi.LL = pi_LLs, pi.UL = pi_ULs, pi.captures.next.r = pi_in_interval, ci.captures.next.r = ci_as_pi_in_interval, pi.dist = pi_capture_dist_percent)
-  # data.out <- data.frame(sample.number = sample.number,
-  #                        pop.r = pop.r,
-  #                        n = n, r =  rs,
-  #                        ci.LL = LLs,
-  #                        ci.UL = ULs,
-  #                        pi.LL = pi_LLs,
-  #                        pi.UL = pi_ULs,
-  #                        ci.captures.pop.r = in_interval,
-  #                        ci.captures.next.r = ci_as_pi_in_interval,
-  #                        pi.captures.next.r = pi_in_interval,
-  #                        p = ps)
+  #data.out <- data.frame(sample.number, pop.r = pop.r, n = n, r =  rs, ci.LL = LLs, ci.UL = ULs, ci.captures.pop.r = in_interval, pi.LL = pi_LLs, pi.UL = pi_ULs, pi.captures.next.r = pi_in_interval, ci.captures.next.r = ci_as_pi_in_interval, pi.dist = pi_capture_dist_percent)
+  data.out <- data.frame(sample.number = sample.number,
+                         pop.r = pop.r,
+                         n = n, r =  rs,
+                         ci.LL = LLs,
+                         ci.UL = ULs,
+                         pi.LL = pi_LLs,
+                         pi.UL = pi_ULs,
+                         ci.captures.pop.r = in_interval,
+                         pi.captures.next.r = pi_in_interval,
+                         p = ps)
 
   rownames(data.out) <- NULL
 
